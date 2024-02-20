@@ -12,6 +12,7 @@ use App\Models\BookStockModel;
 use App\Controllers\BaseController;
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\Exceptions\PageNotFoundException;
+use Exception;
 
 class Home extends ResourceController
 {
@@ -44,6 +45,7 @@ class Home extends ResourceController
     {
         $itemPerPage = 20;
 
+
         if ($this->request->getGet('search')) {
             $keyword = $this->request->getGet('search');
             $books = $this->bookModel
@@ -67,6 +69,31 @@ class Home extends ResourceController
                 ->join('categories', 'books.category_id = categories.id', 'LEFT')
                 ->join('racks', 'books.rack_id = racks.id', 'LEFT')
                 ->paginate($itemPerPage, 'books');
+
+            if ($this->request->isAJAX()) {
+                $param = $this->request->getVar('param');
+                if (empty($param)) {
+                    return json_encode(['error' => 'Parameter "kategori" tidak boleh kosong']);
+                }
+                $books = $this->bookModel
+                    ->select('books.*, book_stock.quantity, categories.name as category, racks.name as rack, racks.floor')
+                    ->join('book_stock', 'books.id = book_stock.book_id', 'LEFT')
+                    ->join('categories', 'books.category_id = categories.id', 'LEFT')
+                    ->join('racks', 'books.rack_id = racks.id', 'LEFT')
+                    ->where('categories.name', $param)
+                    ->paginate($itemPerPage, 'books');
+                $books = array_filter($books, function ($book) {
+                    return $book['deleted_at'] == null;
+                });
+                $data = [
+                    'books'         => $books,
+                    'pager'         => $this->bookModel->pager,
+                    'currentPage'   => $this->request->getVar('page_books') ?? 1,
+                    'itemPerPage'   => $itemPerPage,
+                ];
+
+                return view('home/book', $data);
+            }
         }
 
         $data = [

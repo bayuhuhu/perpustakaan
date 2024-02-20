@@ -11,6 +11,7 @@
 </head>
 
 <body class="position-relative">
+  <div class="" id="book">
   <?= $this->include('layouts/sidebar_user') ?>
   <!--  Body Wrapper -->
   <div class="background">
@@ -32,7 +33,7 @@
       </div>
     </div>
   </div>
-
+  </div>
     <?= $this->renderSection('ulasan') ?>
   <!-- Scripts -->
   <?= $this->include('imports/scripts/basic_scripts') ?>

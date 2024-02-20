@@ -130,7 +130,7 @@ class Home extends ResourceController
             });
 
             if (empty($loans)) {
-                return view('home/return_loans_member/ulasan', ['msg' => 'Loan not found']);
+                return view('home/return_loans_member/ulasan', ['msg' => 'Review not found']);
             }
 
             return view('home/return_loans_member/ulasan', ['loans' => $loans]);

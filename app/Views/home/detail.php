@@ -113,7 +113,7 @@ $coverImageFilePath = BOOK_COVER_URI . $book['book_cover'];
         // console.log(param);
 
         jQuery.ajax({
-            url:"<?= base_url('books/'); ?>" + param, // Mengarahkan ke URL yang sesuai untuk mengambil ulasan buku
+            url: "<?= base_url('books/'); ?>" + param, // Mengarahkan ke URL yang sesuai untuk mengambil ulasan buku
             type: 'get',
             data: {
                 'param': param // Mengirim parameter slug buku
@@ -134,23 +134,10 @@ $coverImageFilePath = BOOK_COVER_URI . $book['book_cover'];
 
 <?= $this->endSection() ?>
 <?= $this->section('ulasan') ?>
-<aside class="position-absolute top-0 end-0 p-3" style="width: 17.5%; background-color: white; ">
-    <div class="my-4">
-        <h5 class="card-title fw-semibold mb-4">Buku dipilih</h5>
-        <ul id="bookList" class="d-flex d-flex flex-wrap gap-2">
-            <li id="none">--Silahkan cari dan pilih buku terlebih dahulu--</li>
-        </ul>
-        <form id="bookForm" action="<?= base_url('loans/books/new'); ?>" method="post">
-            <?= csrf_field(); ?>
-            <input type="hidden" name="member_uid" value="">
-        </form>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div id="bookResult">
-                <p class="text-center mt-4">Data buku muncul disini</p>
-            </div>
-        </div>
+<aside class="position-absolute top-0 end-0 p-2" style="width: 18.5%; background-color: transparent; ">
+
+    <div class="card" style=" width: 100%; background-color: white; margin-top: -5px; " id="bookResult">
+
     </div>
 </aside>
 

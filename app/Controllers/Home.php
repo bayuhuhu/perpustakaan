@@ -2,17 +2,18 @@
 
 namespace App\Controllers;
 
+use Exception;
 use App\Models\BookModel;
+use App\Models\FineModel;
 use App\Models\LoanModel;
 use App\Models\RackModel;
-use App\Models\FineModel;
 use App\Models\MemberModel;
 use App\Models\CategoryModel;
+use App\Libraries\QRGenerator;
 use App\Models\BookStockModel;
 use App\Controllers\BaseController;
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\Exceptions\PageNotFoundException;
-use Exception;
 
 class Home extends ResourceController
 {
@@ -27,7 +28,7 @@ class Home extends ResourceController
     public function __construct()
     {
         $this->bookModel = new BookModel;
-        $this->bookModel = new BookModel;
+        $this->memberModel = new MemberModel;
         $this->categoryModel = new CategoryModel;
         $this->rackModel = new RackModel;
         $this->bookStockModel = new BookStockModel;
@@ -38,7 +39,9 @@ class Home extends ResourceController
 
     public function index(): string
     {
-        return view('home/register');
+        return view('home/register-member', [
+            'validation' => \Config\Services::validation()
+        ]);
     }
 
     public function book(): string
@@ -164,5 +167,113 @@ class Home extends ResourceController
         }
 
         return view('home/detail', $data);
+    }
+
+
+
+    public function newMember()
+    {
+        return view('home/register-member', [
+            'validation' => \Config\Services::validation()
+        ]);
+    }
+
+
+    public function print($uid = null)
+    {
+
+        $member = $this->memberModel->where('uid', $uid)->first();
+
+        if (empty($member)) {
+            throw new PageNotFoundException('Member not found');
+        }
+
+        $data = [
+            'member'            => $member,
+        ];
+
+        return view('home/print', $data);
+    }
+
+
+    public function create()
+    {
+        // Validasi input
+        if (!$this->validate([
+            'first_name'        => 'required|alpha_numeric_punct|max_length[100]',
+            'last_name'         => 'permit_empty|alpha_numeric_punct|max_length[100]',
+            'email'             => 'required|valid_email|max_length[255]',
+            'phone'             => 'required|alpha_numeric_punct|min_length[4]|max_length[20]',
+            'address'           => 'required|string|min_length[5]|max_length[511]',
+            'date_of_birth'     => 'required|valid_date',
+            'gender'            => 'required|alpha_numeric_punct',
+            'type'              => 'required|alpha_numeric_punct',
+            'profile_picture'   => 'is_image[profile_picture]|mime_in[profile_picture,image/jpg,image/jpeg,image/gif,image/png,image/webp]|max_size[profile_picture,5120]'
+        ])) {
+            // Jika validasi gagal, kembalikan view dengan pesan kesalahan dan input sebelumnya
+            $data = [
+                'validation' => \Config\Services::validation(),
+                'oldInput'   => $this->request->getVar(),
+            ];
+
+            return view('home/register_member', $data);
+        }
+
+        // Generate UID untuk member baru
+        $uid = sha1(
+            $this->request->getVar('first_name') .
+                $this->request->getVar('email') .
+                $this->request->getVar('phone') .
+                rand(0, 1000) .
+                md5($this->request->getVar('gender'))
+        );
+
+        // Buat QR Code untuk member baru
+        $qrGenerator = new QRGenerator();
+        $qrCodeLabel = $this->request->getVar('first_name') .
+            ($this->request->getVar('last_name') ? ' ' . $this->request->getVar('last_name') : '');
+        $qrCode = $qrGenerator->generateQRCode(
+            data: $uid,
+            labelText: $qrCodeLabel,
+            dir: MEMBERS_QR_CODE_PATH,
+            filename: $qrCodeLabel
+        );
+
+        // Upload gambar profil jika tersedia
+        $coverImage = $this->request->getFile('profile_picture');
+        $coverImageFileName = null;
+
+        if ($coverImage->getError() != 4) {
+            $coverImageFileName = uploadUSerProfile($coverImage);
+        }
+
+        // Simpan data member baru ke database
+        $memberData = [
+            'uid'               => $uid,
+            'first_name'        => $this->request->getVar('first_name'),
+            'last_name'         => $this->request->getVar('last_name'),
+            'email'             => $this->request->getVar('email'),
+            'phone'             => $this->request->getVar('phone'),
+            'address'           => $this->request->getVar('address'),
+            'type'              => $this->request->getVar('type'),
+            'date_of_birth'     => $this->request->getVar('date_of_birth'),
+            'gender'            => $this->request->getVar('gender'),
+            'profile_picture'   => $coverImageFileName,
+            'qr_code'           => $qrCode
+        ];
+
+        if (!$this->memberModel->save($memberData)) {
+            // Jika penyimpanan gagal, kembalikan view dengan pesan kesalahan dan input sebelumnya
+            $data = [
+                'validation' => \Config\Services::validation(),
+                'oldInput'   => $this->request->getVar(),
+            ];
+
+            session()->setFlashdata(['msg' => 'Insert failed']);
+            return view('home/register_member', $data);
+        }
+
+        // Jika penyimpanan berhasil, arahkan ke halaman cetak dengan UID member
+        return redirect()->to("register-member/$uid/print");
     }
 }

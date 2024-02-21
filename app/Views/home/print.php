@@ -1,4 +1,4 @@
-<?= $this->extend('layouts/admin_layout') ?>
+<?= $this->extend('layouts/home_layout') ?>
 
 <?= $this->section('head') ?>
 
@@ -17,7 +17,7 @@
     }
 </style>
 <div class="w-auto card  p-5">
-    <div class="p-1 w-75 card bg-dark-subtle">
+    <div class="p-1 card bg-dark-subtle">
 
         <div id="img" class="d-flex justify-content-around ">
             <div class="p-3">

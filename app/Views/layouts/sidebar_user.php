@@ -35,7 +35,7 @@
       'Member',
       [
         'name' => 'Daftar Member',
-        'link' => '/register-user',
+        'link' => '/register-member',
         'icon' => 'ti ti-user'
       ],
     ];

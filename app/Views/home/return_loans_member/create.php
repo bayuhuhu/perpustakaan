@@ -104,6 +104,7 @@ $daysLate = $now->today()->difference($loanDueDate)->getDays();
         ?>
           <h5 class="card-title fw-semibold my-3">Denda</h5>
           <div class="row">
+            <div class="text-danger fs-4 mb-2 text-capitalize">Anda terlambat *<?= abs($daysLate); ?>* hari dalam mengembalikan buku mohon hubungi admin untuk melakukan pembayaran denda </div>
             <div class="col-12 col-md-8 mb-4 mb-md-2">
               <p>Keterlambatan * Jumlah buku * Denda per hari per buku</p>
               <div class="row">
@@ -133,7 +134,7 @@ $daysLate = $now->today()->difference($loanDueDate)->getDays();
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-4 px-md-5 d-flex">
+            <div class="col-12 col-md-4 px-md-5 d-flex py-md-3">
               <div class="mx-md-auto">
                 <h5>Total denda:</h5>
                 <h2 class="text-danger">Rp<?= $totalFine; ?></h2>

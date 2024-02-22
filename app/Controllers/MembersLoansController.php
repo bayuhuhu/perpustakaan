@@ -261,6 +261,23 @@ class MembersLoansController extends ResourceController
             return redirect()->to('loans/member/search');
         }
 
+        $totalLoans = $this->loanModel->where('member_id', $member['id'])->countAllResults();
+
+        if ($totalLoans >= 3) {
+            session()->setFlashdata(['msg' => 'Maaf, Anda telah mencapai batas maksimum peminjaman buku.', 'error' => true]);
+            return redirect()->to('loans/member/search');
+        }
+
+        $fines = $this->loanModel
+            ->select('members.*, members.uid as member_uid, books.*, fines.*, fines.id as fine_id, fines.deleted_at as fine_deleted, loans.*')
+            ->join('members', 'loans.member_id = members.id', 'LEFT')
+            ->join('books', 'loans.book_id = books.id', 'LEFT')
+            ->join('fines', 'fines.loan_id = loans.id', 'INNER')
+            ->where('member_id', $member['id'])->countAllResults();
+        if ($fines > 0) {
+            session()->setFlashdata(['msg' => 'Maaf, Anda masih memiliki tanggungan denda. Mohon hubungi admin untuk melunasinya', 'error' => true]);
+            return redirect()->to('loans/member/search');
+        }
         $newLoanIds = [];
 
         foreach ($bookSlugs as $slug) {
@@ -330,5 +347,4 @@ class MembersLoansController extends ResourceController
         session()->setFlashdata(['msg' => 'Loan deleted successfully']);
         return redirect()->to('loans/member/search');
     }
-    
 }

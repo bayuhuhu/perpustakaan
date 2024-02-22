@@ -171,6 +171,16 @@
       bookListElement.querySelector('#none').remove();
       bookFormElement.innerHTML += `<button id="confirmBook" class="btn btn-primary" type="submit">Konfirmasi</button>`;
     }
+    if (bookSelection.size > 3) {
+      alert('Anda hanya dapat memilih hingga 3 buku.');
+      const unselectBook = (slug) => {
+        bookSelection.delete(slug);
+        removeBook(slug);
+        document.getElementById(`book${slug}`).checked = false;
+      };
+
+
+    }
 
     bookListElement.innerHTML += bookCard;
     bookFormElement.innerHTML += `<input type="hidden" name="slugs[]" value="${book.slug}" id="input-${book.slug}">`;

@@ -12,10 +12,10 @@
   <!-- Member -->
   <div class="card">
     <div class="card-body">
-    <a href="<?= base_url('/loans/books/search?member-uid=' . $member['uid']); ?>" class="btn btn-outline-primary mb-5">
-  <i class="ti ti-arrow-left"></i>
-  Kembali
-</a>
+      <a href="<?= base_url('/loans/books/search?member-uid=' . $member['uid']); ?>" class="btn btn-outline-primary mb-5">
+        <i class="ti ti-arrow-left"></i>
+        Kembali
+      </a>
       <h5 class="card-title fw-semibold mb-3">Data Anggota</h5>
       <div class="row">
         <div class="col-12 col-md-6 mb-3">
@@ -61,7 +61,7 @@
                   </div>
                   <div class="col-2">
                     <label for="quantity-<?= $book['slug']; ?>" class="form-label">Jumlah</label>
-                    <input type="number" class="form-control <?php if ($validation->hasError("quantity-{$book['slug']}")) : ?>is-invalid<?php endif ?>" id="quantity-<?= $book['slug']; ?>" name="quantity-<?= $book['slug']; ?>" value="1" placeholder="max=10" max="<?= $book['stock'] < 10 ? $book['stock'] : 10; ?>" min="1" aria-describedby="bookStock" required>
+                    <input type="number"  class="form-control <?php if ($validation->hasError("quantity-{$book['slug']}")) : ?>is-invalid<?php endif ?>" id="quantity-<?= $book['slug']; ?>" name="quantity-<?= $book['slug']; ?>" value="1" placeholder="max=2" max="<?= $book['stock'] < 2 ? $book['stock'] : 2; ?>" min="1" aria-describedby="bookStock" required>
                     <div class="invalid-feedback">
                       <?= $validation->getError("quantity-{$book['slug']}"); ?>
                     </div>

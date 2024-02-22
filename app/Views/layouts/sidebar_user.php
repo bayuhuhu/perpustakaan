@@ -27,11 +27,6 @@
         'link' => '/returns/new/search',
         'icon' => 'ti ti-check'
       ],
-      [
-        'name' => 'Denda',
-        'link' => '/fines',
-        'icon' => 'ti ti-report-money'
-      ],
       'Member',
       [
         'name' => 'Daftar Member',

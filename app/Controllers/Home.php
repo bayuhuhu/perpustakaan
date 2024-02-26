@@ -14,6 +14,7 @@ use App\Models\BookStockModel;
 use App\Controllers\BaseController;
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\Exceptions\PageNotFoundException;
+use Dompdf\Dompdf;
 
 class Home extends ResourceController
 {
@@ -191,8 +192,16 @@ class Home extends ResourceController
         $data = [
             'member'            => $member,
         ];
-
         return view('home/print', $data);
+
+        // $dompdf = new Dompdf();
+        // $html = view('home/print', $data);
+        // $dompdf->loadHtml($html);
+        // $dompdf->setPaper('A4', 'landscape');
+        // $dompdf->render();
+        // $dompdf->stream('member card.pdf', array(
+        //     "Attachment" => false
+        // ));
     }
 
 

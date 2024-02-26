@@ -93,6 +93,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
   function getBookData(param) {
     jQuery.ajax({
@@ -172,14 +173,24 @@
       bookFormElement.innerHTML += `<button id="confirmBook" class="btn btn-primary" type="submit">Konfirmasi</button>`;
     }
     if (bookSelection.size > 3) {
-      alert('Anda hanya dapat memilih hingga 3 buku.');
-      const unselectBook = (slug) => {
-        bookSelection.delete(slug);
-        removeBook(slug);
-        document.getElementById(`book${slug}`).checked = false;
-      };
-
-
+      Swal.fire({
+        title: "Peringatan",
+        text: "Anda hanya dapat memilih hingga 3 buku.",
+        icon: "warning",
+        buttons: {
+          confirm: {
+            text: "OK",
+            value: true,
+            visible: true,
+            className: "btn btn-primary"
+          }
+        }
+      }).then((value) => {
+        if (value) {
+          
+        }
+      });
+      unselectBook(slug);
     }
 
     bookListElement.innerHTML += bookCard;

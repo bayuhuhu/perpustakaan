@@ -2,15 +2,16 @@
 
 namespace App\Controllers\Members;
 
-use App\Libraries\QRGenerator;
+use Dompdf\Dompdf;
 use App\Models\BookModel;
-use App\Models\BookStockModel;
 use App\Models\FineModel;
 use App\Models\LoanModel;
-use App\Models\MemberModel;
-use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\I18n\Time;
+use App\Models\MemberModel;
+use App\Libraries\QRGenerator;
+use App\Models\BookStockModel;
 use CodeIgniter\RESTful\ResourceController;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class MembersController extends ResourceController
 {
@@ -393,6 +394,13 @@ class MembersController extends ResourceController
             'member'            => $member,
         ];
 
-        return view('members/print' ,$data);
+        return view('members/print', $data);
+        // $dompdf = new Dompdf();
+        // $html = view('members/print', $data);
+        // $dompdf->loadHtml($html);
+        // $dompdf->setPaper('A4', 'landscape');
+        // $dompdf->render();
+        // $dompdf->stream('member_card.pdf');
+
     }
 }

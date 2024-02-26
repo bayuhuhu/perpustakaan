@@ -14,7 +14,7 @@ if (empty($loans)) : ?>
       <div class="card mb-1 ">
         <div class="card-body">
           <div class="d-flex align-items-center">
-            <div class=""><i class="ti ti-user-circle"></i></div>
+            <div class="fs-8"><i class="ti ti-user-circle"></i></div>
             <h5 class="card-title ms-3"><?= $loan['first_name'] . ' ' . $loan['last_name']; ?></h5>
           </div>
           <?php $attributes = json_decode($loan['attributes'], true); ?>

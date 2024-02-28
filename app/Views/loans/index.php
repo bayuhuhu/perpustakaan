@@ -99,13 +99,26 @@ if (session()->getFlashdata('msg')) : ?>
             <td>
               <b><?= $loanDueDate->toLocalizedString('dd/MM/y'); ?></b>
             </td>
-            <td class="text-center">
+            <td class="text-center ">
               <?php if ($now->isBefore($loanDueDate)) : ?>
-                <span class="badge bg-success rounded-3 fw-semibold">Normal</span>
+                <span class="badge bg-success rounded-3 m-2 fw-semibold">Normal</span>
               <?php elseif ($now->today()->equals($loanDueDate)) : ?>
-                <span class="badge bg-warning rounded-3 fw-semibold">Jatuh tempo</span>
+                <span class="badge bg-warning rounded-3 m-2 fw-semibold">Jatuh tempo</span>
               <?php else : ?>
-                <span class="badge bg-danger rounded-3 fw-semibold">Terlambat</span>
+                <span class="badge bg-danger rounded-3 m-2 fw-semibold">Terlambat</span>
+              <?php endif; ?>
+              <?php if ($loan['status'] == 'Pending') : ?>
+                <span class="badge bg-primary rounded-3 fw-semibold">
+                  Pending
+                </span>
+              <?php elseif ($loan['status'] == 'Approve') : ?>
+                <span class="badge bg-success rounded-3 fw-semibold">
+                  Approve
+                </span>
+              <?php else : ?>
+                <span class="badge bg-danger rounded-3 fw-semibold">
+                  Reject
+                </span>
               <?php endif; ?>
             </td>
             <td>

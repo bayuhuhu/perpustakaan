@@ -41,9 +41,11 @@ class CreateLoansTable extends Migration
             ],
             'loan_date' => [
                 'type'          => 'DATETIME',
+                'null'          => true
             ],
             'due_date' => [
                 'type'          => 'DATE',
+                'null'          => true
             ],
             'return_date' => [
                 'type'          => 'DATETIME',

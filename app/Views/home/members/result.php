@@ -22,11 +22,13 @@ if (session()->getFlashdata('msg')) : ?>
 
 <div class="card">
   <div class="card-body">
-  <a href="<?= base_url('loans/member/search'); ?>" class="btn btn-outline-primary mb-5">
-  <i class="ti ti-arrow-left"></i>
-  Kembali
-</a>
-    <h5 class="card-title fw-semibold mb-4">Peminjaman Buku Berhasil</h5>
+    <a href="<?= base_url('loans/member/search'); ?>" class="btn btn-outline-primary mb-5">
+      <i class="ti ti-arrow-left"></i>
+      Kembali
+    </a>
+    <h5 class="card-title fw-semibold mb-4">Peminjaman Buku Sedang Diproses Oleh Admin</h5>
+
+
     <table class="table table-hover table-striped">
       <thead class="table-light">
         <tr>
@@ -46,13 +48,13 @@ if (session()->getFlashdata('msg')) : ?>
           <tr>
             <th scope="row"><?= $i++; ?></th>
             <td>
-                <p class="text-primary-emphasis ">
-                  <b><?= "{$loan['first_name']} {$loan['last_name']}"; ?></b>
-                </p>
+              <p class="text-primary-emphasis ">
+                <b><?= "{$loan['first_name']} {$loan['last_name']}"; ?></b>
+              </p>
             </td>
             <td>
-                <p class="text-primary-emphasis "><b><?= "{$loan['title']} ({$loan['year']})"; ?></b></p>
-                <p class="text-body"><?= "Author: {$loan['author']}"; ?></p>
+              <p class="text-primary-emphasis "><b><?= "{$loan['title']} ({$loan['year']})"; ?></b></p>
+              <p class="text-body"><?= "Author: {$loan['author']}"; ?></p>
             </td>
             <td class="text-center"><b><?= $loan['quantity']; ?></b></td>
             <td><b><?= Time::parse($loan['loan_date'])->toLocalizedString('d/M/y'); ?></b></td>
@@ -65,14 +67,7 @@ if (session()->getFlashdata('msg')) : ?>
                   <i class="ti ti-eye"></i>
                   Detail
                 </a>
-                <form action="<?= base_url("loans/{$loan['uid']}"); ?>" method="post">
-                  <?= csrf_field(); ?>
-                  <input type="hidden" name="_method" value="DELETE">
-                  <button type="submit" class="btn btn-danger mb-2" onclick="return confirm('Are you sure?');">
-                    <i class="ti ti-x"></i>
-                    Batalkan
-                  </button>
-                </form>
+
               </div>
             </td>
           </tr>

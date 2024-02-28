@@ -332,6 +332,7 @@ class LoansController extends ResourceController
 
             $newLoan = [
                 'book_id' => $book['id'],
+                'status' => 'Approve',
                 'quantity' => $quantity,
                 'member_id' => $member['id'],
                 'uid' => $loanUid,
@@ -356,6 +357,31 @@ class LoansController extends ResourceController
             'newLoans'  => $newLoans
         ]);
     }
+
+    public function update($uid = null)
+    {
+        $loan = $this->loanModel->where('uid', $uid)->first();
+        if (empty($loan)) {
+            throw new PageNotFoundException('Loan not found');
+        };
+
+        $newStatus = $this->request->getVar('status');
+
+        // Menentukan data yang ingin diupdate
+        $updatedData = [
+            'status' => $newStatus
+        ];
+    
+        // Melakukan pembaruan pada data peminjaman
+        if (!$this->loanModel->update($loan['id'], $updatedData)) {
+            session()->setFlashdata(['msg' => 'Gagal memperbarui data peminjaman', 'error' => true]);
+            return redirect()->back();
+        }
+    
+        session()->setFlashdata('msg', 'Pembaruan data peminjaman berhasil');
+        return redirect()->to('admin/loans');
+    }
+    
 
     /**
      * Return the editable properties of a resource object

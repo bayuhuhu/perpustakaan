@@ -261,7 +261,7 @@ class MembersLoansController extends ResourceController
         $totalLoans = $this->loanModel->where('member_id', $member['id'])->countAllResults();
 
         if ($totalLoans >= 3) {
-            session()->setFlashdata(['msg' => 'Maaf, Anda telah mencapai batas maksimum peminjaman buku.', 'error' => true]);
+            session()->setFlashdata(['msg' => 'Maaf, Anda telah mencapai batas maksimum peminjaman 3 buku. ', 'error' => true]);
             return redirect()->to('loans/member/search');
         }
 
@@ -302,6 +302,7 @@ class MembersLoansController extends ResourceController
 
             $newLoan = [
                 'book_id' => $book['id'],
+                'status' => 'Pending',
                 'quantity' => $quantity,
                 'member_id' => $member['id'],
                 'uid' => $loanUid,
@@ -322,10 +323,16 @@ class MembersLoansController extends ResourceController
                 ->where('loans.id', $id)->first();
         }, $newLoanIds);
 
+        session()->set('new_loan', $newLoans);
+        return redirect()->to('loans/result');
+    }
+    public function result(){
+        $newLoans = session()->get('new_loan');
         return view('home/members/result', [
             'newLoans'  => $newLoans
         ]);
     }
+
     public function delete($uid = null)
     {
         $loan = $this->loanModel->where('uid', $uid)->first();

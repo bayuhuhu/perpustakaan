@@ -39,6 +39,7 @@ $routes->get('register-member/(:any)/print', 'Home::print/$1');
 $routes->resource('register-member', ['controller' => 'Home']);
 $routes->get('loans/member/search', 'MembersLoansController::loans');
 $routes->get('loans/books/search', 'MembersLoansController::searchBook');
+$routes->get('/loans/result', 'MembersLoansController::result');
 $routes->post('loans/books/new', 'MembersLoansController::new');
 $routes->resource('loans', ['controller' => 'MembersLoansController']);
 

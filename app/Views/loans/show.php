@@ -44,20 +44,46 @@ if (session()->getFlashdata('msg')) : ?>
         </a>
       </div>
       <div class="d-flex gap-2 justify-content-end gap-2">
-        <form action="<?= base_url("admin/loans/{$loan['uid']}"); ?>" method="post">
-          <?= csrf_field(); ?>
-          <input type="hidden" name="_method" value="DELETE">
-          <button type="submit" class="btn btn-danger mb-2" onclick="return confirm('Are you sure?');">
-            <i class="ti ti-x"></i>
-            Batalkan
-          </button>
-        </form>
-        <div>
-          <a href="<?= base_url("admin/returns/new?loan-uid={$loan['uid']}"); ?>" class="btn btn-primary w-100">
-            <i class="ti ti-check"></i>
-            Selesaikan pengembalian
-          </a>
-        </div>
+        <?php if ($loan['status'] == 'Pending') : ?>
+          <div class="">
+            <form action="<?= base_url("admin/loans/{$loan['uid']}"); ?>" method="post">
+              <?= csrf_field(); ?>
+              <input type="hidden" name="_method" value="PUT">
+              <input type="hidden" name="status" value="Approve">
+              <button type="submit" class="btn btn-success mb-2" onclick="return confirm('Apakah Anda yakin ingin menyetujui peminjaman ini?');">
+                <i class="ti ti-circle-check"></i>
+                Approve
+              </button>
+            </form>
+          </div>
+
+          <div class="">
+            <form action="<?= base_url("admin/loans/{$loan['uid']}"); ?>" method="post">
+              <?= csrf_field(); ?>
+              <input type="hidden" name="_method" value="PUT">
+              <input type="hidden" name="status" value="Reject">
+              <button type="submit" class="btn btn-danger mb-2" onclick="return confirm('Apakah Anda yakin ingin menolak peminjaman ini?');">
+                <i class="ti ti-x"></i>
+                Reject
+              </button>
+            </form>
+          </div>
+        <?php elseif ($loan['status'] == 'Approve') : ?>
+          <form action="<?= base_url("admin/loans/{$loan['uid']}"); ?>" method="post">
+            <?= csrf_field(); ?>
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger mb-2" onclick="return confirm('Are you sure?');">
+              <i class="ti ti-x"></i>
+              Batalkan
+            </button>
+          </form>
+          <div>
+            <a href="<?= base_url("admin/returns/new?loan-uid={$loan['uid']}"); ?>" class="btn btn-primary w-100">
+              <i class="ti ti-check"></i>
+              Selesaikan pengembalian
+            </a>
+          </div>
+        <?php endif; ?>
       </div>
     </div>
     <h5 class="card-title fw-semibold mb-4">Detail Peminjaman</h5>
@@ -179,65 +205,81 @@ if (session()->getFlashdata('msg')) : ?>
               <?php endif; ?>
             </h2>
             <h5>Status: </h5>
-            <?php if ($now->isBefore($dueDate)) : ?>
-              <span class="badge bg-success rounded-3">
-                <h5 class="fw-semibold mb-0">Normal</h5>
-              </span>
-            <?php elseif ($now->today()->equals($dueDate)) : ?>
-              <span class="badge bg-warning rounded-3">
-                <h5 class="fw-semibold mb-0">Jatuh tempo</h5>
-              </span>
-            <?php else : ?>
-              <span class="badge bg-danger rounded-3">
-                <h5 class="fw-semibold mb-0">Terlambat</h5>
-              </span>
-            <?php endif; ?>
+            <div class="d-flex">
+              <?php if ($now->isBefore($dueDate)) : ?>
+                <span class="badge bg-success rounded-3 ">
+                  <h5 class="fw-semibold mb-0">Normal</h5>
+                </span>
+              <?php elseif ($now->today()->equals($dueDate)) : ?>
+                <span class="badge bg-warning rounded-3 ">
+                  <h5 class="fw-semibold mb-0">Jatuh tempo</h5>
+                </span>
+              <?php else : ?>
+                <span class="badge bg-danger rounded-3 ">
+                  <h5 class="fw-semibold mb-0">Terlambat</h5>
+                </span>
+              <?php endif; ?>
+              <?php if ($loan['status'] == 'Pending') : ?>
+                <span class="badge bg-primary rounded-3 ">
+                  <h5 class="fw-semibold mb-0">Pending</h5>
+                </span>
+              <?php elseif ($loan['status'] == 'Approve') : ?>
+                <span class="badge bg-success rounded-3 ">
+                  <h5 class="fw-semibold mb-0">Approve</h5>
+                </span>
+              <?php else : ?>
+                <span class="badge bg-danger rounded-3 ">
+                  <h5 class="fw-semibold mb-0">Reject</h5>
+                </span>
+              <?php endif; ?>
+            </div>
           </div>
         </div>
       </div>
-      <!-- deadline -->
-      <div class="col-12 col-sm-6 col-xl-4">
-        <div class="card" style="height: 180px;">
-          <div class="card-body">
-            <h2>
-              <i class="ti ti-calendar-due"></i>
-            </h2>
-            <h5>Deadline: </h5>
-            <h4>
-              <?= $now->difference($dueDate)->getDays(); ?> Hari lagi
-            </h4>
+      <?php if ($loan['status'] == 'Pending' || $loan['status'] == 'Approve') : ?>
+        <!-- deadline -->
+        <div class="col-12 col-sm-6 col-xl-4">
+          <div class="card" style="height: 180px;">
+            <div class="card-body">
+              <h2>
+                <i class="ti ti-calendar-due"></i>
+              </h2>
+              <h5>Deadline: </h5>
+              <h4>
+                <?= $now->difference($dueDate)->getDays(); ?> Hari lagi
+              </h4>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- loan date -->
-      <div class="col-12 col-sm-6">
-        <div class="card" style="height: 180px;">
-          <div class="card-body">
-            <h2>
-              <i class="ti ti-calendar-check"></i>
-            </h2>
-            <h5>Waktu pinjam: </h5>
-            <h4>
-              <div><?= $loanDate->toLocalizedString('d MMMM y'); ?></div>
-              <?= $loanDate->toLocalizedString('HH:mm:ss'); ?>
-            </h4>
+        <!-- loan date -->
+        <div class="col-12 col-sm-6">
+          <div class="card" style="height: 180px;">
+            <div class="card-body">
+              <h2>
+                <i class="ti ti-calendar-check"></i>
+              </h2>
+              <h5>Waktu pinjam: </h5>
+              <h4>
+                <div><?= $loanDate->toLocalizedString('d MMMM y'); ?></div>
+                <?= $loanDate->toLocalizedString('HH:mm:ss'); ?>
+              </h4>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- due date -->
-      <div class="col-12 col-sm-6">
-        <div class="card" style="height: 180px;">
-          <div class="card-body">
-            <h2>
-              <i class="ti ti-calendar-due"></i>
-            </h2>
-            <h5>Batas waktu pengembalian: </h5>
-            <h4>
-              <?= $dueDate->toLocalizedString('d MMMM y'); ?>
-            </h4>
+        <!-- due date -->
+        <div class="col-12 col-sm-6">
+          <div class="card" style="height: 180px;">
+            <div class="card-body">
+              <h2>
+                <i class="ti ti-calendar-due"></i>
+              </h2>
+              <h5>Batas waktu pengembalian: </h5>
+              <h4>
+                <?= $dueDate->toLocalizedString('d MMMM y'); ?>
+              </h4>
+            </div>
           </div>
         </div>
-      </div>
     </div>
   </div>
   <!-- qr code -->
@@ -257,5 +299,6 @@ if (session()->getFlashdata('msg')) : ?>
       </div>
     </div>
   </div>
+<?php endif; ?>
 </div>
 <?= $this->endSection() ?>

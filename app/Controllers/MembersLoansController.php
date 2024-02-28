@@ -89,10 +89,7 @@ class MembersLoansController extends ResourceController
             if (empty($param)) return;
 
             $members = $this->memberModel
-                ->like('first_name', $param, insensitiveSearch: true)
-                ->orLike('last_name', $param, insensitiveSearch: true)
-                ->orLike('email', $param, insensitiveSearch: true)
-                ->orWhere('uid', $param)
+                ->Where('uid', $param)
                 ->findAll();
 
             $members = array_filter($members, function ($member) {

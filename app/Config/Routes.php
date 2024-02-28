@@ -33,7 +33,8 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::book');
 $routes->get('books/(:any)', 'Home::detail/$1');
-// $routes->post('register-member', 'Home::newMember');
+$routes->get('absensi_member', 'Home::absensiMember');
+$routes->post('absensi_member/create', 'Home::absensiMemberCreate');
 $routes->get('register-member/(:any)/print', 'Home::print/$1');
 $routes->resource('register-member', ['controller' => 'Home']);
 $routes->get('loans/member/search', 'MembersLoansController::loans');
@@ -52,6 +53,9 @@ service('auth')->routes($routes);
 $routes->group('admin', ['filter' => 'session'], static function (RouteCollection $routes) {
     $routes->get('/', 'Dashboard\DashboardController');
     $routes->get('dashboard', 'Dashboard\DashboardController::dashboard');
+    $routes->get('laporan_peminjaman', 'Dashboard\DashboardController::laporan_peminjaman');
+    $routes->get('cetak_laporan_peminjaman', 'Dashboard\DashboardController::cetak_laporan_peminjaman');
+    $routes->get('absensi_member', 'Dashboard\DashboardController::absensi_member');
     $routes->get('members/(:any)/print', 'Members\MembersController::print/$1');
     $routes->resource('members', ['controller' => 'Members\MembersController']);
     $routes->resource('books', ['controller' => 'Books\BooksController']);

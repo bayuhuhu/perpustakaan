@@ -2,13 +2,15 @@
 
 namespace App\Controllers\Dashboard;
 
+use App\Models\AbsensiModel;
+use Dompdf\Dompdf;
 use App\Models\BookModel;
-use App\Models\CategoryModel;
 use App\Models\FineModel;
 use App\Models\LoanModel;
-use App\Models\MemberModel;
 use App\Models\RackModel;
 use CodeIgniter\I18n\Time;
+use App\Models\MemberModel;
+use App\Models\CategoryModel;
 use CodeIgniter\RESTful\ResourceController;
 
 class DashboardController extends ResourceController
@@ -19,6 +21,7 @@ class DashboardController extends ResourceController
     protected MemberModel $memberModel;
     protected LoanModel $loanModel;
     protected FineModel $fineModel;
+    protected AbsensiModel $absensiModel;
 
     public function __construct()
     {
@@ -28,6 +31,7 @@ class DashboardController extends ResourceController
         $this->memberModel = new MemberModel;
         $this->loanModel = new LoanModel;
         $this->fineModel = new FineModel;
+        $this->absensiModel = new AbsensiModel;
     }
 
     public function index()
@@ -47,6 +51,93 @@ class DashboardController extends ResourceController
 
         return view('dashboard/index', $data);
     }
+
+    public function laporan_peminjaman()
+    {
+        $itemPerPage = 20;
+        $startDate = $this->request->getGet('start_date');
+        $endDate = $this->request->getGet('end_date');
+        $late = $this->request->getGet('late');
+
+        $loans = $this->loanModel
+            ->select('members.*, members.uid as member_uid, books.*, loans.*')
+            ->join('members', 'loans.member_id = members.id', 'LEFT')
+            ->join('books', 'loans.book_id = books.id', 'LEFT');
+
+        if ($late) {
+            $loans = $loans->where('due_date <', date('Y-m-d'))
+                ->where('loans.return_date', null);
+        } else {
+            if (!empty($startDate) && !empty($endDate)) {
+                $loans = $loans->where('loan_date >=', $startDate)
+                    ->where('loan_date <=', $endDate);
+            }
+        }
+
+        $loans = $loans->where('loans.deleted_at', null)
+            ->where('loans.return_date', null)
+            ->paginate($itemPerPage, 'loans');
+
+        $data = [
+            'loans'         => $loans,
+            'pager'         => $this->loanModel->pager,
+            'currentPage'   => $this->request->getVar('page_loans') ?? 1,
+            'itemPerPage'   => $itemPerPage,
+        ];
+
+        return view('dashboard/laporan_peminjaman', $data);
+    }
+
+    public function cetak_laporan_peminjaman()
+    {
+        // require_once APPPATH . 'third_party/dompdf/autoload.inc.php';
+
+
+        $loans[] = $this->loanModel
+            ->select('members.*, members.uid as member_uid, books.*, loans.*')
+            ->join('members', 'loans.member_id = members.id', 'LEFT')
+            ->join('books', 'loans.book_id = books.id', 'LEFT');
+
+        $data['loans'] = $loans;
+        $dompdf = new Dompdf();
+        $html = view('dashboard/cetak_laporan_peminjaman', $data);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        $dompdf->stream('member card.pdf', array(
+            "Attachment" => false
+        ));
+    }
+
+    public function absensi_member()
+    {
+        $itemPerPage = 20;
+        $startDate = $this->request->getGet('start_date');
+        $endDate = $this->request->getGet('end_date');
+
+        $absensi = $this->absensiModel
+            ->select('members.*, absensi.*')
+            ->join('members', 'absensi.member_id = members.id', 'LEFT');
+
+        if (!empty($startDate) && !empty($endDate)) {
+            $absensi = $absensi->where('absensi.created_at >=', $startDate)
+                ->where('absensi.created_at <=', $endDate);
+        }
+
+        $absensi = $absensi
+            ->paginate($itemPerPage, 'absensi');
+
+        $data = [
+            'absensi'       => $absensi,
+            'pager'         => $this->absensiModel->pager,
+            'currentPage'   => $this->request->getVar('page_absensi') ?? 1,
+            'itemPerPage'   => $itemPerPage,
+        ];
+
+        return view('dashboard/laporan_absensi', $data);
+    }
+
+
 
     protected function getDataSummaries(): array
     {

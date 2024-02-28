@@ -24,6 +24,10 @@ class CreateLoansTable extends Migration
                 'constraint'    => 20,
                 'unsigned'      => true,
             ],
+            'status' => [
+                'type'          => 'ENUM',
+                'constraint'    => ['Pending', 'Approve' ,'Reject'],
+            ],
             'quantity' => [
                 'type'          => 'INT',
                 'constraint'    => 11,

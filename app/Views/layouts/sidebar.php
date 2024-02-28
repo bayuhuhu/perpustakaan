@@ -11,6 +11,16 @@ $sidebarNavs =
       'link' => '/admin/dashboard',
       'icon' => 'ti ti-layout-dashboard'
     ],
+    [
+      'name' => 'Laporan Peminjaman',
+      'link' => '/admin/laporan_peminjaman',
+      'icon' => 'ti ti-report'
+    ],
+    [
+      'name' => 'Absensi Member',
+      'link' => '/admin/absensi_member',
+      'icon' => 'ti ti-history'
+    ],
     'Transaksi',
     [
       'name' => 'Peminjaman',

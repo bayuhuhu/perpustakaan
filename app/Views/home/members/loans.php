@@ -32,7 +32,7 @@
       <div class="col-12 col-md-6">
         <h5 class="card-title fw-semibold mb-4">Atau cari anggota</h5>
         <div class="mb-3">
-          <label for="search" class="form-label">Cari UID, nama atau email</label>
+          <label for="search" class="form-label">Cari UID</label>
           <input type="text" class="form-control" id="search" name="search" placeholder="'Ikhsan', 'xibox@gmail.com'">
           <div class="invalid-feedback">
           </div>

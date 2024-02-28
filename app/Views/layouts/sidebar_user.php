@@ -18,6 +18,11 @@
       ],
       'Transaksi',
       [
+        'name' => 'Absensi Member',
+        'link' => '/absensi_member',
+        'icon' => 'ti ti-fingerprint'
+      ],
+      [
         'name' => 'Peminjaman',
         'link' => '/loans/member/search',
         'icon' => 'ti ti-arrows-exchange'
@@ -58,7 +63,7 @@
         'name' => 'Teknologi',
         'kategori' => 'teknologi',
       ],
-    ]
+    ];
 
 
   ?>

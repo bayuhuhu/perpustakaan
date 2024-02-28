@@ -3,18 +3,19 @@
 namespace App\Controllers;
 
 use Exception;
+use Dompdf\Dompdf;
 use App\Models\BookModel;
 use App\Models\FineModel;
 use App\Models\LoanModel;
 use App\Models\RackModel;
 use App\Models\MemberModel;
+use App\Models\AbsensiModel;
 use App\Models\CategoryModel;
 use App\Libraries\QRGenerator;
 use App\Models\BookStockModel;
 use App\Controllers\BaseController;
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\Exceptions\PageNotFoundException;
-use Dompdf\Dompdf;
 
 class Home extends ResourceController
 {
@@ -172,11 +173,50 @@ class Home extends ResourceController
 
 
 
-    public function newMember()
+    public function absensiMember()
     {
-        return view('home/register-member', [
-            'validation' => \Config\Services::validation()
-        ]);
+        if ($this->request->isAJAX()) {
+            $param = $this->request->getVar('param');
+
+            if (empty($param)) return;
+
+            $members = $this->memberModel
+                ->Where('uid', $param)
+                ->findAll();
+
+            $members = array_filter($members, function ($member) {
+                return $member['deleted_at'] == null;
+            });
+
+            if (empty($members)) {
+                return view('home/members/absensi', ['msg' => 'Member not found']);
+            }
+
+            return view('home/members/absensi', ['members' => $members]);
+        }
+        return view('home/members/absensi_member');
+    }
+    public function absensiMemberCreate()
+    {
+        $memberId = $this->request->getPost('member_id');
+        $absensiModel = new AbsensiModel();
+
+        // Siapkan data untuk disimpan
+        $data = [
+            'member_id' => $memberId,
+            // Tambahkan data lainnya jika diperlukan
+        ];
+
+        // Simpan data absensi
+        $result = $absensiModel->insert($data);
+
+        if ($result) {
+            session()->setFlashdata(['msg' => 'Absensi Was Succefully']);
+            return redirect()->to('/absensi_member');
+        } else {
+            session()->setFlashdata(['msg' => 'Failed to Absensi    ', 'error' => true]);
+            return redirect()->back();
+        }
     }
 
 

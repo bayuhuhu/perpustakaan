@@ -44,24 +44,24 @@
   $kategoriBook =
     [
       [
-        'name' => 'Fiksi',
-        'kategori' => 'fiksi',
+        'name' => 'a1',
+        'kategori' => 'a1',
       ],
       [
-        'name' => 'Non-Fiksi',
-        'kategori' => 'non-fiksi',
+        'name' => 'a2',
+        'kategori' => 'a2',
       ],
       [
-        'name' => 'Sejarah',
-        'kategori' => 'sejarah',
+        'name' => 'a3',
+        'kategori' => 'a3',
       ],
       [
-        'name' => 'Komik',
-        'kategori' => 'komik',
+        'name' => 'a4',
+        'kategori' => 'a4',
       ],
       [
-        'name' => 'Teknologi',
-        'kategori' => 'teknologi',
+        'name' => 'a5',
+        'kategori' => 'a5',
       ],
     ];
 

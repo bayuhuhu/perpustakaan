@@ -57,6 +57,7 @@ if (session()->getFlashdata('msg')) : ?>
                     <th scope="col" class="text-center">Jumlah</th>
                     <th scope="col">Tgl pinjam</th>
                     <th scope="col">Tenggat</th>
+                    <th scope="col">tanggal pengembalian</th>
                     <th scope="col" class="text-center">Status</th>
                 </tr>
             </thead>
@@ -75,6 +76,7 @@ if (session()->getFlashdata('msg')) : ?>
                 foreach ($loans as $key => $loan) :
                     $loanCreateDate = Time::parse($loan['loan_date'], locale: 'id');
                     $loanDueDate = Time::parse($loan['due_date'], locale: 'id');
+
 
                     $isLate = $now->isAfter($loanDueDate);
                     $isDueDate = $now->today()->difference($loanDueDate)->getDays() == 0;
@@ -102,14 +104,32 @@ if (session()->getFlashdata('msg')) : ?>
                         <td>
                             <b><?= $loanDueDate->toLocalizedString('dd/MM/y'); ?></b>
                         </td>
+                        <td>
+                            <?php if (!empty($loan['return_date'])) :
+                                $loanReturningDate = Time::parse($loan['return_date'], locale: 'id');
+                            ?>
+                                <b><?= $loanReturningDate->toLocalizedString('dd/MM/y'); ?></b>
+                            <?php else :
+                            ?>
+                                <b>belum dikembalikan</b>
+                            <?php endif ?>
+                        </td>
                         <td class="text-center">
-                            <?php if ($now->isBefore($loanDueDate)) : ?>
-                                <span class="badge bg-success rounded-3 fw-semibold">Normal</span>
-                            <?php elseif ($now->today()->equals($loanDueDate)) : ?>
-                                <span class="badge bg-warning rounded-3 fw-semibold">Jatuh tempo</span>
-                            <?php else : ?>
-                                <span class="badge bg-danger rounded-3 fw-semibold">Terlambat</span>
-                            <?php endif; ?>
+                            <?php if (!empty($loan['return_date'])) :
+                                $loanReturningDate = Time::parse($loan['return_date'], locale: 'id');
+                                if ($loanReturningDate->isBefore($loanDueDate)) : ?>
+                                    <span class="badge bg-success rounded-3 fw-semibold">Normal</span>
+
+                                <?php elseif ($loanReturningDate->today()->equals($loanDueDate)) : ?>
+                                    <span class="badge bg-succes rounded-3 fw-semibold">tepat waktu</span>
+                                <?php else : ?>
+                                    <span class="badge bg-danger rounded-3 fw-semibold">Terlambat</span>
+                                <?php endif; ?>
+                            <?php else :
+                            ?>
+                                <span class="badge bg-primary rounded-3 fw-semibold">belum dikembalikan</span>
+                            <?php endif ?>
+
                         </td>
                     </tr>
                 <?php endforeach; ?>

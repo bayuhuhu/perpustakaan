@@ -81,15 +81,19 @@ class UsersController extends ResourceController
             'username'      => $usernameChanged ? 'required|string|is_unique[users.username]' : 'required|string',
             'email'         => 'required|valid_email|max_length[255]',
             'password' => [
-                'label'  => 'Auth.password',
-                'rules'  => 'permit_empty|' . Passwords::getMaxLengthRule() . '|strong_password',
+                'label'  => 'Kata Sandi',
+                'rules'  => 'permit_empty|min_length[12]|regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/]',
                 'errors' => [
-                    'max_byte' => 'Auth.errorPasswordTooLongBytes',
+                    'min_length' => 'Kata Sandi harus memiliki minimal 12 karakter.',
+                    'regex_match' => 'Kata Sandi harus mengandung setidaknya 1 huruf kapital, 1 huruf kecil, 1 angka, dan 1 karakter khusus.',
                 ],
             ],
             'password_confirm' => [
-                'label' => 'Auth.passwordConfirm',
+                'label' => 'Konfirmasi Kata Sandi',
                 'rules' => 'permit_empty|matches[password]',
+                'errors' => [
+                    'matches' => 'Konfirmasi Kata Sandi harus sama dengan Kata Sandi.',
+                ],
             ],
         ])) {
             $data = [
@@ -141,5 +145,22 @@ class UsersController extends ResourceController
 
         session()->setFlashdata(['msg' => 'User deleted successfully']);
         return redirect()->to('admin/users');
+    }
+    public function ubah_password()
+    {
+        // if (!setting('Auth.allowRegistration')) {
+        //     return redirect()->back()->withInput()
+        //         ->with('error', lang('Auth.registerDisabled'));
+        // }
+
+        // /** @var Session $authenticator */
+        // $authenticator = auth('session')->getAuthenticator();
+
+        // // If an action has been defined, start it up.
+        // if ($authenticator->hasAction()) {
+        //     return redirect()->route('auth-action-show');
+        // }
+
+        return view('users/ganti_pasword');
     }
 }

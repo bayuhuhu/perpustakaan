@@ -71,9 +71,9 @@
                     <label class="form-label">Lama meminjam</label>
                     <div class="my-2 <?php if ($validation->hasError("duration-{$book['slug']}")) : ?>is-invalid<?php endif ?>">
                       <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" id="7days-<?= $book['slug']; ?>" name="duration-<?= $book['slug']; ?>" value="7" <?= ($oldInput['duration-' . $book['slug']] ?? '') == '7' ? 'checked' : ''; ?> required>
-                        <label class="form-check-label" for="7days-<?= $book['slug']; ?>">
-                          7 hari
+                        <input type="radio" class="form-check-input" id="2days-<?= $book['slug']; ?>" name="duration-<?= $book['slug']; ?>" value="2" <?= ($oldInput['duration-' . $book['slug']] ?? '') == '2' ? 'checked' : ''; ?> required>
+                        <label class="form-check-label" for="2days-<?= $book['slug']; ?>">
+                          2 hari
                         </label>
                       </div>
                       <div class="form-check form-check-inline">

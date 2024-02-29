@@ -364,24 +364,39 @@ class LoansController extends ResourceController
         if (empty($loan)) {
             throw new PageNotFoundException('Loan not found');
         };
-
+        // Mengambil data status dari permintaan
         $newStatus = $this->request->getVar('status');
 
         // Menentukan data yang ingin diupdate
-        $updatedData = [
-            'status' => $newStatus
-        ];
-    
-        // Melakukan pembaruan pada data peminjaman
-        if (!$this->loanModel->update($loan['id'], $updatedData)) {
-            session()->setFlashdata(['msg' => 'Gagal memperbarui data peminjaman', 'error' => true]);
-            return redirect()->back();
+
+
+        // Jika status adalah 'rejected', set loan date dan due date menjadi null
+        if ($newStatus === 'Reject') {
+            $updatedData = [
+                'status' => $newStatus,
+                'return_date' => date('Y-m-d H:i:s'),
+            ];
+            if (!$this->loanModel->update($loan['id'], $updatedData)) {
+                session()->setFlashdata(['msg' => 'Gagal memperbarui data peminjaman', 'error' => true]);
+                return redirect()->back();
+            }
+        } else {
+            $updatedData = [
+                'status' => $newStatus,
+            ];
+            if (!$this->loanModel->update($loan['id'], $updatedData)) {
+                session()->setFlashdata(['msg' => 'Gagal memperbarui data peminjaman', 'error' => true]);
+                return redirect()->back();
+            }
         }
-    
+
+
+
         session()->setFlashdata('msg', 'Pembaruan data peminjaman berhasil');
         return redirect()->to('admin/loans');
+
     }
-    
+
 
     /**
      * Return the editable properties of a resource object

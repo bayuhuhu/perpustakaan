@@ -49,7 +49,13 @@
                   <span class="badge bg-black rounded-3 fw-semibold"><?= $userGroup; ?></span>
                 <?php endif; ?>
               </div>
-              <a href="<?= base_url('logout'); ?>" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+              <div class="col-12 d-flex">
+                <div class="col-6 my-2">
+                  <a href="<?= base_url('logout'); ?>" class="btn btn-outline-warning mx-3 mt-2 d-block">Logout</a>
+
+                </div>
+                <div class="col-6"><a href="<?= base_url('admin/ganti'); ?>" class="btn btn-outline-primary mx-3 mt-2 d-block">Ubah Password</a></div>
+              </div>
             </div>
           </div>
         </li>

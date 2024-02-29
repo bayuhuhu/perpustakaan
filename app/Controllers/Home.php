@@ -301,7 +301,8 @@ class Home extends ResourceController
             'uid'               => $uid,
             'first_name'        => $this->request->getVar('first_name'),
             'last_name'         => $this->request->getVar('last_name'),
-            'email'             => $this->request->getVar('email'),
+            'email' => 'self_' . $this->request->getVar('email')
+            ,
             'phone'             => $this->request->getVar('phone'),
             'address'           => $this->request->getVar('address'),
             'type'              => $this->request->getVar('type'),

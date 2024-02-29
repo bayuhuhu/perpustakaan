@@ -74,8 +74,7 @@ class DashboardController extends ResourceController
             }
         }
 
-        $loans = $loans->where('loans.deleted_at', null)
-            ->where('loans.return_date', null)
+        $loans = $loans
             ->paginate($itemPerPage, 'loans');
 
         $data = [

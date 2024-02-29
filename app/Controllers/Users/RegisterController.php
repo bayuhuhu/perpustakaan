@@ -40,7 +40,16 @@ class RegisterController extends RegisterCtrl
 
         // Validate here first, since some things,
         // like the password, can only be validated properly here.
-        $rules = $this->getValidationRules();
+        $rules = [
+            'email' => 'required|valid_email|max_length[255]',
+            'password' => [
+                'label'  => 'Password',
+                'rules'  => 'required|min_length[12]|regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/]',
+                'errors' => [
+                    'regex_match' => 'Password harus memiliki minimal 12 karakter dan mengandung setidaknya 1 huruf kapital, 1 huruf kecil, 1 angka, dan 1 karakter khusus.'
+                ]
+            ]
+        ];
 
         if (!$this->validateData($this->request->getPost(), $rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());

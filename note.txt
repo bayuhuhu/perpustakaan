@@ -1,0 +1,12 @@
+email
+bayuheri2709@gmail.com
+Bayuheri1234$
+tampilkan isbn
+tambahkan kategori buku 
+menambahkan     
+<?= base_url("admin/users/{$user['id']}/edit"); ?>
+
+<b><?= $loanReturningDate->toLocalizedString('dd/MM/y'); ?></b>
+
+ <?php if (!empty($loan['return_date']))  : ?>
+                                <span class="badge bg-success rounded-3 fw-semibold">Belum dikembalikan</span>
